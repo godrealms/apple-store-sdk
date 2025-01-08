@@ -96,7 +96,6 @@ apple-store-sdk/
     ├── architecture.md        // SDK 架构说明
     └── changelog.md           // 更新日志
 ```
-```
 
 #### **使用示例**
 **1. 初始化客户端**
