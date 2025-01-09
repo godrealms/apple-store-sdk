@@ -118,7 +118,7 @@ func (c *Client) RetryMiddleware(maxRetries int, delay time.Duration) Middleware
 
 // Get is a helper for GET requests
 func (c *Client) Get(endpoint string, headers map[string]string, params map[string]string) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s/%s/%s?%s", c.Config.BaseURL, c.Config.APIVersion, c.Config.Region, endpoint, utils.BuildQueryParams(params))
+	url := fmt.Sprintf("%s/%s?%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
 	return c.httpHelper.Get(url, headers)
 }
 
@@ -126,4 +126,9 @@ func (c *Client) Get(endpoint string, headers map[string]string, params map[stri
 func (c *Client) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseURL, c.Config.APIVersion, c.Config.Region, endpoint)
 	return c.httpHelper.Post(url, body, headers)
+}
+
+func (c *Client) PUT(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
+	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	return c.httpHelper.Put(url, body, headers)
 }

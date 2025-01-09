@@ -106,33 +106,3 @@ const (
 	//仅当您提出请求时，您才会收到此通知。有关故障排除信息，请参阅获取测试通知状态端点。
 	NotificationTypeTest NotificationType = "TEST"
 )
-
-// NotificationPayload represents the payload sent by Apple in server-to-server notifications
-type NotificationPayload struct {
-	NotificationType       NotificationType `json:"notification_type"`         // 通知类型
-	AutoRenewStatus        bool             `json:"auto_renew_status"`         // 是否自动续订
-	AutoRenewProductID     string           `json:"auto_renew_product_id"`     // 自动续订的产品 ID
-	Environment            string           `json:"environment"`               // 沙盒或生产环境
-	BundleID               string           `json:"bid"`                       // 应用的 Bundle ID
-	OriginalTransactionID  string           `json:"original_transaction_id"`   // 原始交易 ID
-	ProductID              string           `json:"product_id"`                // 产品 ID
-	ExpirationDate         string           `json:"expiration_date"`           // 订阅到期时间
-	PurchaseDate           string           `json:"purchase_date"`             // 购买时间
-	GracePeriodExpiresDate string           `json:"grace_period_expires_date"` // 宽限期到期时间
-	PriceIncreaseStatus    int              `json:"price_increase_status"`     // 价格变更状态
-}
-
-// SubscriptionStatus represents the current status of a subscription
-type SubscriptionStatus struct {
-	IsActive       bool   `json:"is_active"`       // 当前订阅是否有效
-	ExpirationDate string `json:"expiration_date"` // 到期时间
-	ProductID      string `json:"product_id"`      // 产品 ID
-	UserID         string `json:"user_id"`         // 用户 ID
-}
-
-// RefundDetails represents refund information
-type RefundDetails struct {
-	TransactionID string `json:"transaction_id"` // 退款相关的交易 ID
-	Reason        string `json:"reason"`         // 退款原因
-	RefundDate    string `json:"refund_date"`    // 退款日期
-}

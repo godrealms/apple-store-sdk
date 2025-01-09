@@ -1,11 +1,10 @@
 package services
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"net/http"
+	"github.com/godrealms/apple-store-sdk/pkg/models"
 )
 
 // SubscriptionsService handles Apple subscription-related API calls
@@ -20,106 +19,69 @@ func NewSubscriptionsService(client *client.Client) *SubscriptionsService {
 	}
 }
 
-// VerifyReceipt verifies the receipt with Apple's App Store Server API v2
-func (s *SubscriptionsService) VerifyReceipt(receipt string) (*models.ReceiptResponse, error) {
-	url := fmt.Sprintf("%s/inApps/v2/verifyReceipt", s.client.BaseURL)
-
-	// Create request payload
-	payload := map[string]string{
-		"receipt-data": receipt,
+func (ss *SubscriptionsService) GetAllSubscriptionStatuses(transactionId string) (*models.StatusResponse, error) {
+	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionId)
+	headers := map[string]string{
+		"Accept": "application/json",
 	}
-	body, err := json.Marshal(payload)
+	body, code, err := ss.client.Get(endpoint, headers, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialize receipt: %w", err)
+		return nil, err
 	}
-
-	// Create HTTP request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.client.Config.AppleJWT))
-
-	// Execute HTTP request
-	resp, err := s.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
-	}
-	defer resp.Body.Close()
-
-	// Parse response
-	var response models.ReceiptResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("failed to parse response: %w", err)
-	}
-
-	return &response, nil
+	_ = body
+	_ = code
+	return nil, nil
 }
 
-// GetSubscriptionStatus retrieves the subscription status using Apple's App Store Server API v2
-func (s *SubscriptionsService) GetSubscriptionStatus(originalTransactionID string) (*models.SubscriptionStatusResponse, error) {
-	url := fmt.Sprintf("%s/inApps/v2/subscriptions/%s", s.client.BaseURL, originalTransactionID)
-
-	// Create HTTP request
-	req, err := http.NewRequest("GET", url, nil)
+// ExtendSubscriptionRenewalDate Extends the renewal date of a customer’s active subscription using the original transaction identifier.
+func (ss *SubscriptionsService) ExtendSubscriptionRenewalDate(originalTransactionId string, request *models.ExtendRenewalDateRequest) (*models.ExtendRenewalDateResponse, error) {
+	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/extend/%s", originalTransactionId)
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	jsonBody, err := json.Marshal(request)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
+		return nil, err
 	}
-
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.client.Config.AppleJWT))
-
-	// Execute HTTP request
-	resp, err := s.client.Do(req)
+	body, code, err := ss.client.PUT(endpoint, headers, jsonBody)
 	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
+		return nil, err
 	}
-	defer resp.Body.Close()
-
-	// Parse response
-	var response models.SubscriptionStatusResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("failed to parse response: %w", err)
-	}
-
-	return &response, nil
+	_ = body
+	_ = code
+	return nil, nil
 }
 
-// CancelSubscription sends a request to Apple's App Store Server API v2 to cancel a subscription
-func (s *SubscriptionsService) CancelSubscription(originalTransactionID string, reason int) (*models.CancelResponse, error) {
-	url := fmt.Sprintf("%s/inApps/v2/subscriptions/%s/cancel", s.client.BaseURL, originalTransactionID)
-
-	// Create request payload
-	payload := map[string]int{
-		"cancellation_reason": reason,
+// ExtendSubscriptionRenewalDatesForAllActiveSubscribers Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
+func (ss *SubscriptionsService) ExtendSubscriptionRenewalDatesForAllActiveSubscribers(request *models.MassExtendRenewalDateRequest) (*models.MassExtendRenewalDateResponse, error) {
+	endpoint := "/inApps/v1/subscriptions/extend/mass/"
+	headers := map[string]string{
+		"Accept": "application/json",
 	}
-	body, err := json.Marshal(payload)
+	jsonBody, err := json.Marshal(request)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialize payload: %w", err)
+		return nil, err
 	}
-
-	// Create HTTP request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	body, code, err := ss.client.PUT(endpoint, headers, jsonBody)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
+		return nil, err
 	}
+	_ = body
+	_ = code
+	return nil, nil
+}
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.client.Config.AppleJWT))
-
-	// Execute HTTP request
-	resp, err := s.client.Do(req)
+// GetStatusOfSubscriptionRenewalDateExtensions Checks whether a renewal date extension request completed, and provides the final count of successful or failed extensions.
+func (ss *SubscriptionsService) GetStatusOfSubscriptionRenewalDateExtensions(productId, requestIdentifier string) (*models.MassExtendRenewalDateStatusResponse, error) {
+	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/extend/mass/%s/%s", productId, requestIdentifier)
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	body, code, err := ss.client.Get(endpoint, headers, nil)
 	if err != nil {
-		return nil, fmt.Errorf("request failed: %w", err)
+		return nil, err
 	}
-	defer resp.Body.Close()
-
-	// Parse response
-	var response models.CancelResponse
-	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("failed to parse response: %w", err)
-	}
-
-	return &response, nil
+	_ = body
+	_ = code
+	return nil, nil
 }

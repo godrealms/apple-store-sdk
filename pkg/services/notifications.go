@@ -2,63 +2,67 @@ package services
 
 import (
 	"encoding/json"
-	"net/http"
+	"fmt"
+	"github.com/godrealms/apple-store-sdk/pkg/client"
+	"github.com/godrealms/apple-store-sdk/pkg/models"
 )
 
-// NotificationHandler defines a function type for handling notifications
-type NotificationHandler func(payload NotificationPayload) error
-
-// NotificationHandlers maps notification types to handler functions
-var NotificationHandlers = map[NotificationType]NotificationHandler{}
-
-// RegisterNotificationHandler registers a handler for a specific notification type
-func RegisterNotificationHandler(notificationType NotificationType, handler NotificationHandler) {
-	NotificationHandlers[notificationType] = handler
+type NotificationService struct {
+	client *client.Client
 }
 
-// HandleNotification parses and processes the notification payload
-func HandleNotification(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
+func NewNotificationService(client *client.Client) *NotificationService {
+	return &NotificationService{
+		client: client,
 	}
-
-	var payload NotificationPayload
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		http.Error(w, "Invalid payload", http.StatusBadRequest)
-		return
-	}
-
-	handler, exists := NotificationHandlers[payload.NotificationType]
-	if !exists {
-		http.Error(w, "No handler for notification type", http.StatusNotImplemented)
-		return
-	}
-
-	if err := handler(payload); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Notification handled successfully"))
 }
 
-// Example default handlers
-func handleRenewal(payload NotificationPayload) error {
-	// Business logic for renewal notifications
-	// e.g., update subscription status in the database
-	return nil
+// GetNotificationHistory Get a list of notifications that the App Store server attempted to send to your server.
+// paginationToken: A pagination token that you return to the endpoint on a subsequent call to receive the next set of results.
+func (ns *NotificationService) GetNotificationHistory(paginationToken string, request *models.NotificationHistoryRequest) (*models.NotificationHistoryResponse, error) {
+	endpoint := "/inApps/v1/notifications/history"
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	jsonBody, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+	body, code, err := ns.client.Post(endpoint, jsonBody, headers)
+	if err != nil {
+		return nil, err
+	}
+	_ = body
+	_ = code
+	return nil, nil
 }
 
-func handleCancel(payload NotificationPayload) error {
-	// Business logic for cancellation notifications
-	// e.g., mark subscription as canceled in the database
-	return nil
+// RequestTestNotification Ask App Store Server Notifications to send a test notification to your server.
+func (ns *NotificationService) RequestTestNotification() (*models.SendTestNotificationResponse, error) {
+	endpoint := "/inApps/v1/notifications/test"
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	body, code, err := ns.client.Post(endpoint, nil, headers)
+	if err != nil {
+		return nil, err
+	}
+	_ = body
+	_ = code
+	return nil, nil
 }
 
-func init() {
-	// Register default handlers
-	RegisterNotificationHandler(NotificationTypeRenewal, handleRenewal)
-	RegisterNotificationHandler(NotificationTypeCancel, handleCancel)
+// GetTestNotificationStatus Check the status of the test App Store server notification sent to your server.
+func (ns *NotificationService) GetTestNotificationStatus(testNotificationToken string) (*models.CheckTestNotificationResponse, error) {
+	endpoint := fmt.Sprintf("/inApps/v1/notifications/test/%s", testNotificationToken)
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	body, code, err := ns.client.Get(endpoint, headers, nil)
+	if err != nil {
+		return nil, err
+	}
+	_ = body
+	_ = code
+	return nil, nil
 }
