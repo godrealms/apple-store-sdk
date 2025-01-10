@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
 	"github.com/godrealms/apple-store-sdk/pkg/models"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -70,6 +71,18 @@ func (ns *NotificationService) GetTestNotificationStatus(testNotificationToken s
 
 // ReceiveNotifications Receiving App Store Server Notifications
 func (ns *NotificationService) ReceiveNotifications(request *http.Request) (*models.NotificationsResponseBodyV2DecodedPayload, error) {
+	// 读取请求体
+	body, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading request body: %w", err)
+	}
+	defer request.Body.Close() // 确保请求体关闭
 
-	return nil, nil
+	// 解析 JSON 数据
+	var requestData models.NotificationsResponseBodyV2
+	if err = json.Unmarshal(body, &requestData); err != nil {
+		return nil, fmt.Errorf("error unmarshalling request body: %w", err)
+	}
+
+	return requestData.SignedPayload.DecodedPayload()
 }
