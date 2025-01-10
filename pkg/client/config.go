@@ -41,7 +41,7 @@ type Config struct {
 }
 
 // NewConfig creates a new configuration instance
-func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey string, timeout ...time.Duration) *Config {
+func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey string, timeout ...time.Duration) (*Config, error) {
 	// Determine the BaseURL based on sandbox mode
 	baseURL := ProductionBaseURL
 	if sandboxMode {
@@ -56,7 +56,7 @@ func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey str
 		resolvedTimeout = DefaultTimeout
 	}
 
-	return &Config{
+	config := &Config{
 		APIKey:     apiKey,
 		BaseURL:    baseURL,
 		Timeout:    resolvedTimeout,
@@ -69,6 +69,8 @@ func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey str
 		PrivateKey: privateKey,
 		DebugMode:  false, // Default to false
 	}
+
+	return config, config.Validate()
 }
 
 // SetAPIVersion allows setting a custom API version
@@ -95,19 +97,19 @@ func (c *Config) Validate() error {
 		return fmt.Errorf("API key is missing")
 	}
 	if c.BaseURL == "" {
-		return fmt.Errorf("Base URL is missing")
+		return fmt.Errorf("base URL is missing")
 	}
 	if c.TeamID == "" {
-		return fmt.Errorf("Team ID is missing")
+		return fmt.Errorf("team ID is missing")
 	}
 	if c.KeyID == "" {
-		return fmt.Errorf("Key ID is missing")
+		return fmt.Errorf("key ID is missing")
 	}
 	if c.APIVersion == "" {
 		return fmt.Errorf("API version is missing")
 	}
 	if c.Region == "" {
-		return fmt.Errorf("Region is missing")
+		return fmt.Errorf("region is missing")
 	}
 	return nil
 }
