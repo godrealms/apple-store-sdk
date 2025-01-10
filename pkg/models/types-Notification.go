@@ -52,3 +52,180 @@ type notificationHistoryResponseItem struct {
 	// Use the earliest sendAttemptItem in the sendAttempts array instead.
 	FirstSendAttemptResult firstSendAttemptResult `json:"firstSendAttemptResult"`
 }
+
+// A string that provides details about select notification types in version 2.
+// ACCEPTED
+// Applies to the PRICE_INCREASE notificationType. A notification with this subtype indicates that the customer
+// consented to the subscription price increase if the price increase requires customer consent, or that the system
+// notified them of a price increase if the price increase doesn’t require customer consent.
+//
+// AUTO_RENEW_DISABLED
+// Applies to the DID_CHANGE_RENEWAL_STATUS notificationType. A notification with this `subtype indicates that the user
+// disabled subscription auto-renewal, or the App Store disabled subscription auto-renewal after the user requested a refund.
+//
+// AUTO_RENEW_ENABLED
+// Applies to the DID_CHANGE_RENEWAL_STATUS notificationType. A notification with this subtype indicates that the user
+// enabled subscription auto-renewal.
+//
+// BILLING_RECOVERY
+// Applies to the DID_RENEW notificationType. A notification with this subtype indicates that the expired subscription
+// that previously failed to renew has successfully renewed.
+//
+// BILLING_RETRY
+// Applies to the EXPIRED notificationType. A notification with this subtype indicates that the subscription expired
+// because the subscription failed to renew before the billing retry period ended.
+//
+// DOWNGRADE
+// Applies to the DID_CHANGE_RENEWAL_PREF and OFFER_REDEEMED notificationType. A notification with this subtype indicates
+// that the user downgraded their subscription or cross-graded to a subscription with a different duration.
+// Downgrades take effect at the next renewal date.
+//
+// FAILURE
+// Applies to the RENEWAL_EXTENSION notificationType. A notification with this subtype indicates that the
+// subscription-renewal-date extension failed for an individual subscription. For details, see the data object in the
+// responseBodyV2DecodedPayload. For information on the request, see Extend Subscription Renewal Dates for All Active Subscribers.
+//
+// GRACE_PERIOD
+// Applies to the DID_FAIL_TO_RENEW notificationType. A notification with this subtype indicates that the subscription
+// failed to renew due to a billing issue. Continue to provide access to the subscription during the grace period.
+//
+// INITIAL_BUY
+// Applies to the SUBSCRIBED notificationType. A notification with this subtype indicates that the user purchased the
+// subscription for the first time or that the user received access to the subscription through Family Sharing for the first time.
+//
+// PENDING
+// Applies to the PRICE_INCREASE notificationType. A notification with this subtype indicates that the system informed
+// the user of the subscription price increase, but the user hasn’t accepted it.
+//
+// PRICE_INCREASE
+// Applies to the EXPIRED notificationType. A notification with this subtype indicates that the subscription expired
+// because the user didn’t consent to a price increase.
+//
+// PRODUCT_NOT_FOR_SALE
+// Applies to the EXPIRED notificationType. A notification with this subtype indicates that the subscription expired
+// because the product wasn’t available for purchase at the time the subscription attempted to renew.
+//
+// RESUBSCRIBE
+// Applies to the SUBSCRIBED notificationType. A notification with this subtype indicates that the user resubscribed or
+// received access through Family Sharing to the same subscription or to another subscription within the same subscription group.
+//
+// SUMMARY
+// Applies to the RENEWAL_EXTENSION notificationType. A notification with this subtype indicates that the App Store server
+// completed your request to extend the subscription renewal date for all eligible subscribers. For the summary details,
+// see the summary object in the responseBodyV2DecodedPayload. For information on the request,
+// see Extend Subscription Renewal Dates for All Active Subscribers.
+//
+// UPGRADE
+// Applies to the DID_CHANGE_RENEWAL_PREF and OFFER_REDEEMED notificationType.
+// A notification with this subtype indicates that the user upgraded their subscription or cross-graded to a subscription
+// with the same duration. Upgrades take effect immediately.
+//
+// UNREPORTED
+// Applies to the EXTERNAL_PURCHASE_TOKEN notificationType.
+// A notification with this subtype indicates that Apple created a token for your app but didn’t receive a report.
+// For more information about reporting the token, see externalPurchaseToken.
+//
+// VOLUNTARY
+// Applies to the EXPIRED notificationType.
+// A notification with this subtype indicates that the subscription expired after the user disabled subscription auto-renewal.
+type subtype string
+
+// The version of the build that identifies an iteration of the bundle.
+type bundleVersion string
+
+// The customer-provided reason for a refund request.
+// UNINTENDED_PURCHASE: The customer didn’t intend to make the in-app purchase.
+// FULFILLMENT_ISSUE: The customer had issues with receiving or using the in-app purchase.
+// UNSATISFIED_WITH_PURCHASE: The customer wasn’t satisfied with the in-app purchase.
+// LEGAL: The customer requested a refund based on a legal reason.
+// OTHER: The customer requested a refund for other reasons.
+type consumptionRequestReason string
+
+// The payload data that contains app metadata and the signed renewal and transaction information.
+type data struct {
+	// The unique identifier of the app that the notification applies to.
+	// This property is available for apps that users download from the App Store.
+	// It isn’t present in the sandbox environment.
+	AppAppleId appAppleId `json:"appAppleId"`
+
+	// The bundle identifier of the app.
+	BundleId bundleId `json:"bundleId"`
+
+	// The version of the build that identifies an iteration of the bundle.
+	BundleVersion bundleVersion `json:"bundleVersion"`
+
+	// The reason the customer requested the refund. This field appears only for CONSUMPTION_REQUEST notifications,
+	//which the server sends when a customer initiates a refund request for a consumable in-app purchase or auto-renewable subscription.
+	ConsumptionRequestReason consumptionRequestReason `json:"consumptionRequestReason"`
+
+	// The server environment that the notification applies to, either sandbox or production.
+	Environment environment `json:"environment"`
+
+	// Subscription renewal information signed by the App Store, in JSON Web Signature (JWS) format.
+	// This field appears only for notifications that apply to auto-renewable subscriptions.
+	SignedRenewalInfo JWSRenewalInfo `json:"signedRenewalInfo"`
+
+	// Transaction information signed by the App Store, in JSON Web Signature (JWS) format.
+	SignedTransactionInfo JWSTransaction `json:"signedTransactionInfo"`
+
+	// The status of an auto-renewable subscription as of the signedDate in the responseBodyV2DecodedPayload.
+	// This field appears only for notifications sent for auto-renewable subscriptions.
+	Status status `json:"status"`
+}
+
+type summary struct {
+	// The UUID that represents a specific request to extend a subscription renewal date.
+	// This value matches the value you initially specify in the requestIdentifier when you call Extend Subscription
+	// Renewal Dates for All Active Subscribers in the App Store Server API.
+	RequestIdentifier requestIdentifier `json:"requestIdentifier"`
+
+	// The server environment that the notification applies to, either sandbox or production.
+	Environment environment `json:"environment"`
+
+	// The unique identifier of the app that the notification applies to. This property is available for apps that users
+	// download from the App Store. It isn’t present in the sandbox environment.
+	AppAppleId appAppleId `json:"appAppleId"`
+
+	// The bundle identifier of the app.
+	BundleId bundleId `json:"bundleId"`
+
+	// The product identifier of the auto-renewable subscription that the subscription-renewal-date extension applies to.
+	ProductId productId `json:"productId"`
+
+	// A list of country codes that limits the App Store’s attempt to apply the subscription-renewal-date extension.
+	// If this list isn’t present, the subscription-renewal-date extension applies to all storefronts.
+	StorefrontCountryCodes storefrontCountryCodes `json:"storefrontCountryCodes"`
+
+	// The final count of subscriptions that fail to receive a subscription-renewal-date extension.
+	FailedCount failedCount `json:"failedCount"`
+
+	// The final count of subscriptions that successfully receive a subscription-renewal-date extension.
+	SucceededCount succeededCount `json:"succeededCount"`
+}
+
+// The field of an external purchase token that uniquely identifies the token.
+type externalPurchaseId string
+
+// The field of an external purchase token that uniquely identifies the token.
+type tokenCreationDate timestamp
+
+// The payload data that contains an external purchase token.
+type externalPurchaseToken struct {
+	// The unique identifier of the token. Use this value to report tokens and their associated transactions in the Send External Purchase Report endpoint.
+	ExternalPurchaseId externalPurchaseId `json:"externalPurchaseId"`
+
+	// The UNIX time, in milliseconds, when the system created the token.
+	TokenCreationDate tokenCreationDate `json:"tokenCreationDate"`
+
+	// The app Apple ID for which the system generated the token.
+	AppAppleId appAppleId `json:"appAppleId"`
+
+	// The bundle ID of the app for which the system generated the token.
+	BundleId bundleId `json:"bundleId"`
+}
+
+// A string that indicates the notification’s App Store Server Notifications version number.
+type version string
+
+// A unique identifier for the notification.
+type notificationUUID string

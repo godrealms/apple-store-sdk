@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
 	"github.com/godrealms/apple-store-sdk/pkg/models"
+	"net/http"
 )
 
 type NotificationService struct {
@@ -64,5 +65,11 @@ func (ns *NotificationService) GetTestNotificationStatus(testNotificationToken s
 	}
 	_ = body
 	_ = code
+	return nil, nil
+}
+
+// ReceiveNotifications Receiving App Store Server Notifications
+func (ns *NotificationService) ReceiveNotifications(request *http.Request) (*models.NotificationsResponseBodyV2DecodedPayload, error) {
+
 	return nil, nil
 }

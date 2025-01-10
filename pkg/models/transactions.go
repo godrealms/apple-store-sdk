@@ -1,6 +1,7 @@
 package models
 
-type TransactionHistory struct {
+// HistoryResponse A response that contains the customer’s transaction history for an app.
+type HistoryResponse struct {
 	// The app’s identifier in the App Store.
 	AppAppleId appAppleId `json:"appAppleId"`
 
@@ -21,7 +22,8 @@ type TransactionHistory struct {
 	SignedTransactions []JWSTransaction `json:"signedTransactions"`
 }
 
-type TransactionInfo struct {
+// TransactionInfoResponse A response that contains signed transaction information for a single transaction.
+type TransactionInfoResponse struct {
 	// A customer’s in-app purchase transaction, signed by Apple, in JSON Web Signature (JWS) format.
 	SignedTransactionInfo JWSTransaction `json:"signedTransactionInfo"`
 }

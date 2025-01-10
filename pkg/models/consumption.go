@@ -1,5 +1,6 @@
 package models
 
+// ConsumptionRequest The request body containing consumption information.
 type ConsumptionRequest struct {
 	// (Required) The age of the customer’s account.
 	AccountTenure accountTenure `json:"accountTenure"`

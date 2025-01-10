@@ -67,3 +67,39 @@ type CheckTestNotificationResponse struct {
 	// Use the first sendAttemptItem in the sendAttempts array instead.
 	FirstSendAttemptResult firstSendAttemptResult `json:"firstSendAttemptResult"`
 }
+
+// NotificationsResponseBodyV2 The response body the App Store sends in a version 2 server notification.
+type NotificationsResponseBodyV2 struct {
+	// A cryptographically signed payload, in JSON Web Signature (JWS) format, that contains the response body for a version 2 notification.
+	SignedPayload signedPayload `json:"signedPayload"`
+}
+
+// NotificationsResponseBodyV2DecodedPayload A decoded payload that contains the version 2 notification data.
+type NotificationsResponseBodyV2DecodedPayload struct {
+	// The in-app purchase event for which the App Store sends this version 2 notification.
+	NotificationType notificationType `json:"notificationType"`
+
+	// Additional information that identifies the notification event. The subtype field is present only for specific version 2 notifications.
+	Subtype subtype `json:"subtype"`
+
+	// The object that contains the app metadata and signed renewal and transaction information.
+	// The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
+	Data data `json:"data"`
+
+	// The summary data that appears when the App Store server completes your request to extend a subscription renewal date for eligible subscribers. For more information, see Extend Subscription Renewal Dates for All Active Subscribers.
+	// The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
+	Summary summary `json:"summary"`
+
+	// This field appears when the notificationType is EXTERNAL_PURCHASE_TOKEN.
+	// The data, summary, and externalPurchaseToken fields are mutually exclusive. The payload contains only one of these fields.
+	ExternalPurchaseToken externalPurchaseToken `json:"externalPurchaseToken"`
+
+	// The App Store Server Notification version number, "2.0".
+	Version version `json:"version"`
+
+	// The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.
+	SignedDate signedDate `json:"signedDate"`
+
+	// A unique identifier for the notification. Use this value to identify a duplicate notification.
+	NotificationUUID notificationUUID `json:"notificationUUID"`
+}
