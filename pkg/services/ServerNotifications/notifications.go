@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/services/ServerAPI/models"
+	"github.com/godrealms/apple-store-sdk/pkg/models"
 	"io/ioutil"
 	"net/http"
 )
