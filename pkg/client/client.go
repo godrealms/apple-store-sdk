@@ -146,3 +146,9 @@ func (c *Client) Patch(endpoint string, headers map[string]string, parameters an
 	}
 	return c.httpHelper.Path(url, body, headers)
 }
+
+func (c *Client) Delete(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
+	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	headers["Accept"] = "application/json"
+	return c.httpHelper.Delete(url, body, headers)
+}

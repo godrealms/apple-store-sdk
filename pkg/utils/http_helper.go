@@ -42,8 +42,8 @@ func (h *HTTPHelper) Path(url string, body []byte, headers map[string]string) ([
 }
 
 // Delete performs an HTTP DELETE request
-func (h *HTTPHelper) Delete(url string, headers map[string]string) ([]byte, int, error) {
-	return h.doRequest("DELETE", url, nil, headers)
+func (h *HTTPHelper) Delete(url string, body []byte, headers map[string]string) ([]byte, int, error) {
+	return h.doRequest("DELETE", url, body, headers)
 }
 
 // doRequest is a helper method for making HTTP requests
