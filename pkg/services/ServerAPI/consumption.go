@@ -1,10 +1,11 @@
-package services
+package ServerAPI
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/models"
+	"github.com/godrealms/apple-store-sdk/pkg/services/ServerAPI/models"
+	"net/http"
 )
 
 // ConsumptionService Consumption Information Service
@@ -28,11 +29,15 @@ func (sis *ConsumptionService) SendConsumptionInformation(transactionId string, 
 	if err != nil {
 		return err
 	}
-	body, code, err := sis.client.PUT(endpoint, headers, jsonBody)
+	_, code, err := sis.client.PUT(endpoint, headers, jsonBody)
 	if err != nil {
 		return err
 	}
-	_ = body
-	_ = code
-	return nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		return nil
+	default:
+		return fmt.Errorf("status code %d", code)
+	}
 }

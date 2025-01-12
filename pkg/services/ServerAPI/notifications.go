@@ -1,11 +1,10 @@
-package services
+package ServerAPI
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/models"
-	"io/ioutil"
+	"github.com/godrealms/apple-store-sdk/pkg/services/ServerAPI/models"
 	"net/http"
 )
 
@@ -34,9 +33,17 @@ func (ns *NotificationService) GetNotificationHistory(paginationToken string, re
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.NotificationHistoryResponse
+		if err = json.Unmarshal(body, &models.HistoryResponse{}); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }
 
 // RequestTestNotification Ask App Store Server Notifications to send a test notification to your server.
@@ -49,9 +56,17 @@ func (ns *NotificationService) RequestTestNotification() (*models.SendTestNotifi
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.SendTestNotificationResponse
+		if err = json.Unmarshal(body, &models.HistoryResponse{}); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }
 
 // GetTestNotificationStatus Check the status of the test App Store server notification sent to your server.
@@ -64,25 +79,15 @@ func (ns *NotificationService) GetTestNotificationStatus(testNotificationToken s
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
-}
-
-// ReceiveNotifications Receiving App Store Server Notifications
-func (ns *NotificationService) ReceiveNotifications(request *http.Request) (*models.NotificationsResponseBodyV2DecodedPayload, error) {
-	// 读取请求体
-	body, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error reading request body: %w", err)
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.CheckTestNotificationResponse
+		if err = json.Unmarshal(body, &response); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
 	}
-	defer request.Body.Close() // 确保请求体关闭
-
-	// 解析 JSON 数据
-	var requestData models.NotificationsResponseBodyV2
-	if err = json.Unmarshal(body, &requestData); err != nil {
-		return nil, fmt.Errorf("error unmarshalling request body: %w", err)
-	}
-
-	return requestData.SignedPayload.DecodedPayload()
 }

@@ -1,10 +1,11 @@
-package services
+package ServerAPI
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/models"
+	"github.com/godrealms/apple-store-sdk/pkg/services/ServerAPI/models"
+	"net/http"
 )
 
 // SubscriptionsService handles Apple subscription-related API calls
@@ -28,9 +29,17 @@ func (ss *SubscriptionsService) GetAllSubscriptionStatuses(transactionId string)
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.StatusResponse
+		if err = json.Unmarshal(body, &response); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }
 
 // ExtendSubscriptionRenewalDate Extends the renewal date of a customer’s active subscription using the original transaction identifier.
@@ -47,9 +56,17 @@ func (ss *SubscriptionsService) ExtendSubscriptionRenewalDate(originalTransactio
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.ExtendRenewalDateResponse
+		if err = json.Unmarshal(body, &response); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }
 
 // ExtendSubscriptionRenewalDatesForAllActiveSubscribers Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
@@ -66,9 +83,17 @@ func (ss *SubscriptionsService) ExtendSubscriptionRenewalDatesForAllActiveSubscr
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.MassExtendRenewalDateResponse
+		if err = json.Unmarshal(body, &response); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }
 
 // GetStatusOfSubscriptionRenewalDateExtensions Checks whether a renewal date extension request completed, and provides the final count of successful or failed extensions.
@@ -81,7 +106,15 @@ func (ss *SubscriptionsService) GetStatusOfSubscriptionRenewalDateExtensions(pro
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.MassExtendRenewalDateStatusResponse
+		if err = json.Unmarshal(body, &response); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }

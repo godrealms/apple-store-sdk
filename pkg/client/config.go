@@ -73,6 +73,11 @@ func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey str
 	return config, config.Validate()
 }
 
+// SetBaseUrl Set request address
+func (c *Config) SetBaseUrl(url string) {
+	c.BaseURL = url
+}
+
 // SetAPIVersion allows setting a custom API version
 func (c *Config) SetAPIVersion(version string) *Config {
 	c.APIVersion = version

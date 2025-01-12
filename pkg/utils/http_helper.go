@@ -37,6 +37,10 @@ func (h *HTTPHelper) Put(url string, body []byte, headers map[string]string) ([]
 	return h.doRequest("PUT", url, body, headers)
 }
 
+func (h *HTTPHelper) Path(url string, body []byte, headers map[string]string) ([]byte, int, error) {
+	return h.doRequest("PATH", url, body, headers)
+}
+
 // Delete performs an HTTP DELETE request
 func (h *HTTPHelper) Delete(url string, headers map[string]string) ([]byte, int, error) {
 	return h.doRequest("DELETE", url, nil, headers)
@@ -68,10 +72,10 @@ func (h *HTTPHelper) doRequest(method, url string, body []byte, headers map[stri
 }
 
 // BuildQueryParams builds a query string from a map
-func BuildQueryParams(params map[string]string) string {
+func BuildQueryParams(params any) string {
 	query := url.Values{}
-	for key, value := range params {
-		query.Add(key, value)
-	}
+	//for key, value := range params {
+	//	query.Add(key, value)
+	//}
 	return query.Encode()
 }

@@ -24,4 +24,16 @@ var (
 
 	// InvalidPlatformError An error that indicates the value in the platform field is invalid.
 	InvalidPlatformError = NewAppleStoreAPIError(4000039, "Invalid request. The platform field is invalid.")
+
+	// InvalidPlayTimeError An error that indicates the value in the playtime field is invalid.
+	InvalidPlayTimeError = NewAppleStoreAPIError(4000040, "Invalid request. The playtime field is invalid.")
+
+	// InvalidSampleContentProvidedError An error that indicates the value in the sample content provided field is invalid.
+	InvalidSampleContentProvidedError = NewAppleStoreAPIError(4000041, "An error that indicates the value in the sample content provided field is invalid.")
+
+	// InvalidTransactionTypeNotSupportedError An error that indicates the transaction identifier represents an unsupported In-App Purchase type.
+	InvalidTransactionTypeNotSupportedError = NewAppleStoreAPIError(4000047, "Invalid request. The transaction id doesn't represent a supported in-app purchase type.")
+
+	// InvalidUserStatusError An error that indicates the value in the user status field is invalid.
+	InvalidUserStatusError = NewAppleStoreAPIError(4000042, "Invalid request. The user status field is invalid.")
 )

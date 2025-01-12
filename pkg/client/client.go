@@ -1,6 +1,7 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/utils"
 	"net/http"
@@ -117,18 +118,31 @@ func (c *Client) RetryMiddleware(maxRetries int, delay time.Duration) Middleware
 }
 
 // Get is a helper for GET requests
-func (c *Client) Get(endpoint string, headers map[string]string, params map[string]string) ([]byte, int, error) {
+func (c *Client) Get(endpoint string, headers map[string]string, params any) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s?%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
+	headers["Accept"] = "application/json"
 	return c.httpHelper.Get(url, headers)
 }
 
 // Post is a helper for POST requests
 func (c *Client) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseURL, c.Config.APIVersion, c.Config.Region, endpoint)
+	headers["Accept"] = "application/json"
 	return c.httpHelper.Post(url, body, headers)
 }
 
 func (c *Client) PUT(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	headers["Accept"] = "application/json"
 	return c.httpHelper.Put(url, body, headers)
+}
+
+func (c *Client) Patch(endpoint string, headers map[string]string, parameters any) ([]byte, int, error) {
+	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	headers["Accept"] = "application/json"
+	body, err := json.Marshal(parameters)
+	if err != nil {
+		return nil, http.StatusBadRequest, err
+	}
+	return c.httpHelper.Path(url, body, headers)
 }

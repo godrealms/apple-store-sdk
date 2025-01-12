@@ -1,9 +1,11 @@
-package services
+package ServerAPI
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/models"
+	"github.com/godrealms/apple-store-sdk/pkg/services/ServerAPI/models"
+	"net/http"
 )
 
 type RefundService struct {
@@ -26,7 +28,16 @@ func (rs *RefundService) GetRefundHistory(transactionId string) (*models.RefundH
 	if err != nil {
 		return nil, err
 	}
-	_ = body
-	_ = code
-	return nil, nil
+
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		var response models.RefundHistoryResponse
+		if err = json.Unmarshal(body, &response); err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
 }
