@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/utils"
 	"github.com/golang-jwt/jwt/v5"
+	"log"
 	"net/http"
 	"time"
 )
@@ -123,6 +124,9 @@ func (c *Client) RetryMiddleware(maxRetries int, delay time.Duration) Middleware
 // Get is a helper for GET requests
 func (c *Client) Get(endpoint string, headers map[string]string, params any) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s?%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
+	if headers == nil {
+		headers = make(map[string]string)
+	}
 	headers["Accept"] = "application/json"
 	headers["Authorization"] = c.GenerateAuthorizationJWT()
 	return c.httpHelper.Get(url, headers)
@@ -131,6 +135,9 @@ func (c *Client) Get(endpoint string, headers map[string]string, params any) ([]
 // Post is a helper for POST requests
 func (c *Client) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseURL, c.Config.APIVersion, c.Config.Region, endpoint)
+	if headers == nil {
+		headers = make(map[string]string)
+	}
 	headers["Accept"] = "application/json"
 	headers["Authorization"] = c.GenerateAuthorizationJWT()
 	return c.httpHelper.Post(url, body, headers)
@@ -138,6 +145,9 @@ func (c *Client) Post(endpoint string, body []byte, headers map[string]string) (
 
 func (c *Client) PUT(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	if headers == nil {
+		headers = make(map[string]string)
+	}
 	headers["Accept"] = "application/json"
 	headers["Authorization"] = c.GenerateAuthorizationJWT()
 	return c.httpHelper.Put(url, body, headers)
@@ -145,6 +155,9 @@ func (c *Client) PUT(endpoint string, headers map[string]string, body []byte) ([
 
 func (c *Client) Patch(endpoint string, headers map[string]string, parameters any) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	if headers == nil {
+		headers = make(map[string]string)
+	}
 	headers["Accept"] = "application/json"
 	headers["Authorization"] = c.GenerateAuthorizationJWT()
 	body, err := json.Marshal(parameters)
@@ -156,6 +169,9 @@ func (c *Client) Patch(endpoint string, headers map[string]string, parameters an
 
 func (c *Client) Delete(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	if headers == nil {
+		headers = make(map[string]string)
+	}
 	headers["Accept"] = "application/json"
 	headers["Authorization"] = c.GenerateAuthorizationJWT()
 	return c.httpHelper.Delete(url, body, headers)
@@ -165,15 +181,15 @@ func (c *Client) GenerateAuthorizationJWT() string {
 	// 解析 PEM 格式的私钥
 	block, _ := pem.Decode([]byte(c.Config.PrivateKey))
 	if block == nil || block.Type != "PRIVATE KEY" {
+		log.Println("failed to decode PEM block")
 		return ""
 	}
-
 	// 解析 EC 私钥
 	privateKey, err := x509.ParseECPrivateKey(block.Bytes)
 	if err != nil {
+		log.Println("failed to parse private key")
 		return ""
 	}
-
 	// 创建 JWT 的 Header 和 Claims
 	now := time.Now()
 	claims := jwt.MapClaims{
@@ -183,16 +199,14 @@ func (c *Client) GenerateAuthorizationJWT() string {
 		"aud": "appstoreconnect-v1",             // Fixed value appstoreconnect-v1
 		"bid": c.Config.BundleID,
 	}
-
 	// 创建 JWT
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 	token.Header["kid"] = c.Config.KeyID // Set Header's kid (key ID)
-
 	// 使用私钥签名
 	signedToken, err := token.SignedString(privateKey)
 	if err != nil {
+		log.Println("failed to sign token")
 		return ""
 	}
-
 	return fmt.Sprintf("Bearer %s", signedToken)
 }
