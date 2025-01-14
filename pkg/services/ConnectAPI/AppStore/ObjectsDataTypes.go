@@ -107,8 +107,8 @@ type BetaAppReviewDetail DataLinks
 // AppInfos The data and links that describe the relationship between the resources.
 type AppInfos DataLinksMeta
 
-// AppStoreVersions The data and links that describe the relationship between the resources.
-type AppStoreVersions DataLinksMeta
+// Versions The data and links that describe the relationship between the resources.
+type Versions DataLinksMeta
 
 // EndUserLicenseAgreement The data and links that describe the relationship between the resources.
 type EndUserLicenseAgreement DataLinks
@@ -132,7 +132,7 @@ type SubscriptionGracePeriod DataLinks
 type InAppPurchasesV2 DataLinksMeta
 type PromotedPurchases DataLinksMeta
 type SubscriptionGroups DataLinksMeta
-type AppStoreVersionExperimentsV2 DataLinksMeta
+type VersionExperimentsV2 DataLinksMeta
 type AppEncryptionDeclarations DataLinksMeta
 type GameCenterDetail DataLinks
 type AlternativeDistributionKey struct {
@@ -187,7 +187,7 @@ type Relationships struct {
 	AppInfos AppInfos `json:"appInfos"`
 
 	// The data and links that describe the relationship between the Apps and the App Store Versions resources.
-	AppStoreVersions AppStoreVersions `json:"appStoreVersions"`
+	AppStoreVersions Versions `json:"appStoreVersions"`
 
 	// The data and links that describe the relationship between the Apps and the End User License Agreements (EULA) resources.
 	EndUserLicenseAgreement EndUserLicenseAgreement `json:"endUserLicenseAgreement"`
@@ -204,25 +204,25 @@ type Relationships struct {
 	// The data and links that describe the relationship between the Apps and the App Clips resources.
 	AppClips AppClips `json:"appClips"`
 
-	AppCustomProductPages        AppCustomProductPages        `json:"appCustomProductPages"`
-	AppEvents                    AppEvents                    `json:"appEvents"`
-	ReviewSubmissions            ReviewSubmissions            `json:"reviewSubmissions"`
-	SubscriptionGracePeriod      SubscriptionGracePeriod      `json:"subscriptionGracePeriod"`
-	InAppPurchasesV2             InAppPurchasesV2             `json:"inAppPurchasesV2"`
-	PromotedPurchases            PromotedPurchases            `json:"promotedPurchases"`
-	SubscriptionGroups           SubscriptionGroups           `json:"subscriptionGroups"`
-	AppStoreVersionExperimentsV2 AppStoreVersionExperimentsV2 `json:"appStoreVersionExperimentsV2"`
-	AppEncryptionDeclarations    AppEncryptionDeclarations    `json:"appEncryptionDeclarations"`
-	GameCenterDetail             GameCenterDetail             `json:"gameCenterDetail"`
-	AlternativeDistributionKey   AlternativeDistributionKey   `json:"alternativeDistributionKey"`
-	AnalyticsReportRequests      AnalyticsReportRequests      `json:"analyticsReportRequests"`
-	AppAvailabilityV2            AppAvailabilityV2            `json:"appAvailabilityV2"`
-	AppPricePoints               AppPricePoints               `json:"appPricePoints"`
-	AppPriceSchedule             AppPriceSchedule             `json:"appPriceSchedule"`
-	BetaTesters                  BetaTesters                  `json:"betaTesters"`
-	CustomerReviews              CustomerReviews              `json:"customerReviews"`
-	MarketplaceSearchDetail      MarketplaceSearchDetail      `json:"marketplaceSearchDetail"`
-	PerfPowerMetrics             PerfPowerMetrics             `json:"perfPowerMetrics"`
+	AppCustomProductPages        AppCustomProductPages      `json:"appCustomProductPages"`
+	AppEvents                    AppEvents                  `json:"appEvents"`
+	ReviewSubmissions            ReviewSubmissions          `json:"reviewSubmissions"`
+	SubscriptionGracePeriod      SubscriptionGracePeriod    `json:"subscriptionGracePeriod"`
+	InAppPurchasesV2             InAppPurchasesV2           `json:"inAppPurchasesV2"`
+	PromotedPurchases            PromotedPurchases          `json:"promotedPurchases"`
+	SubscriptionGroups           SubscriptionGroups         `json:"subscriptionGroups"`
+	AppStoreVersionExperimentsV2 VersionExperimentsV2       `json:"appStoreVersionExperimentsV2"`
+	AppEncryptionDeclarations    AppEncryptionDeclarations  `json:"appEncryptionDeclarations"`
+	GameCenterDetail             GameCenterDetail           `json:"gameCenterDetail"`
+	AlternativeDistributionKey   AlternativeDistributionKey `json:"alternativeDistributionKey"`
+	AnalyticsReportRequests      AnalyticsReportRequests    `json:"analyticsReportRequests"`
+	AppAvailabilityV2            AppAvailabilityV2          `json:"appAvailabilityV2"`
+	AppPricePoints               AppPricePoints             `json:"appPricePoints"`
+	AppPriceSchedule             AppPriceSchedule           `json:"appPriceSchedule"`
+	BetaTesters                  BetaTesters                `json:"betaTesters"`
+	CustomerReviews              CustomerReviews            `json:"customerReviews"`
+	MarketplaceSearchDetail      MarketplaceSearchDetail    `json:"marketplaceSearchDetail"`
+	PerfPowerMetrics             PerfPowerMetrics           `json:"perfPowerMetrics"`
 }
 
 // ResourceLinks Self-links to requested resources.
@@ -463,10 +463,10 @@ type BetaLicenseAgreementWithoutIncludesResponse string
 type CiProductResponse string
 type AppPricePointsV3Response string
 type AppInfosResponse string
-type AppStoreVersionsResponse string
+type VersionsResponse string
 type EndUserLicenseAgreementWithoutIncludesResponse string
 type AppCustomProductPagesResponse string
-type AppStoreVersionExperimentsV2Response string
+type VersionExperimentsV2Response string
 type PromotedPurchasesResponse string
 type ReviewSubmissionsResponse string
 type XcodeMetrics string

@@ -333,7 +333,7 @@ func (a *Apps) ListAllAppInfosForAnApp(id string, parameters *QueryParameters) (
 }
 
 // ListAllAppStoreVersionsForAnApp Get a list of all App Store versions of an app across all platforms.
-func (a *Apps) ListAllAppStoreVersionsForAnApp(id string, parameters *QueryParameters) (*AppStoreVersionsResponse, error) {
+func (a *Apps) ListAllAppStoreVersionsForAnApp(id string, parameters *QueryParameters) (*VersionsResponse, error) {
 	url := fmt.Sprintf("/v1/apps/%s/appStoreVersions", id)
 	headers := map[string]string{}
 	body, status, err := a.client.Patch(url, headers, parameters)
@@ -343,7 +343,7 @@ func (a *Apps) ListAllAppStoreVersionsForAnApp(id string, parameters *QueryParam
 	if status != http.StatusOK {
 		return nil, errors.New(strconv.Itoa(status))
 	}
-	var response AppStoreVersionsResponse
+	var response VersionsResponse
 	if err = json.Unmarshal(body, &response); err != nil {
 		return nil, err
 	}
@@ -387,7 +387,7 @@ func (a *Apps) ListAllCustomProductPagesForAnApp(id string, parameters *QueryPar
 }
 
 // ListAllAppStoreVersionExperimentsV2 ListAllAppStoreVersionExperimentsV2
-func (a *Apps) ListAllAppStoreVersionExperimentsV2(id string, parameters *QueryParameters) (*AppStoreVersionExperimentsV2Response, error) {
+func (a *Apps) ListAllAppStoreVersionExperimentsV2(id string, parameters *QueryParameters) (*VersionExperimentsV2Response, error) {
 	url := fmt.Sprintf("/v1/apps/%s/appStoreVersionExperimentsV2", id)
 	headers := map[string]string{}
 	body, status, err := a.client.Patch(url, headers, parameters)
@@ -397,7 +397,7 @@ func (a *Apps) ListAllAppStoreVersionExperimentsV2(id string, parameters *QueryP
 	if status != http.StatusOK {
 		return nil, errors.New(strconv.Itoa(status))
 	}
-	var response AppStoreVersionExperimentsV2Response
+	var response VersionExperimentsV2Response
 	if err = json.Unmarshal(body, &response); err != nil {
 		return nil, err
 	}

@@ -2,9 +2,11 @@ package utils
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"reflect"
 	"time"
 )
 
@@ -71,11 +73,50 @@ func (h *HTTPHelper) doRequest(method, url string, body []byte, headers map[stri
 	return responseBody, resp.StatusCode, nil
 }
 
-// BuildQueryParams builds a query string from a map
+// BuildQueryParams builds a query string from any input, supporting nested structs and maps.
 func BuildQueryParams(params any) string {
 	query := url.Values{}
-	//for key, value := range params {
-	//	query.Add(key, value)
-	//}
+	buildQueryRecursive(query, "", params)
 	return query.Encode()
+}
+
+// buildQueryRecursive handles nested structs and maps recursively.
+func buildQueryRecursive(query url.Values, prefix string, params any) {
+	v := reflect.ValueOf(params)
+
+	switch v.Kind() {
+	case reflect.Map:
+		// 处理 map 类型
+		for _, key := range v.MapKeys() {
+			k := fmt.Sprintf("%v", key)
+			val := v.MapIndex(key).Interface()
+			fullKey := k
+			if prefix != "" {
+				fullKey = fmt.Sprintf("%s[%s]", prefix, k)
+			}
+			buildQueryRecursive(query, fullKey, val)
+		}
+	case reflect.Struct:
+		// 处理 struct 类型
+		for i := 0; i < v.NumField(); i++ {
+			field := v.Type().Field(i)
+			key := field.Name
+			val := v.Field(i).Interface()
+			fullKey := key
+			if prefix != "" {
+				fullKey = fmt.Sprintf("%s[%s]", prefix, key)
+			}
+			buildQueryRecursive(query, fullKey, val)
+		}
+	case reflect.Slice, reflect.Array:
+		// 处理切片或数组
+		for i := 0; i < v.Len(); i++ {
+			item := v.Index(i).Interface()
+			fullKey := fmt.Sprintf("%s[]", prefix)
+			buildQueryRecursive(query, fullKey, item)
+		}
+	default:
+		// 处理基本类型
+		query.Add(prefix, fmt.Sprintf("%v", params))
+	}
 }
