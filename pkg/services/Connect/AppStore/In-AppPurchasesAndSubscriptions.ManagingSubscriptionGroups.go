@@ -54,7 +54,28 @@ func (sg *SubscriptionGroups) ModifySubscriptionGroup() {}
 func (sg *SubscriptionGroups) DeleteSubscriptionGroup() {}
 
 // ListAllSubscriptionGroupLocalizations Get a list of all localized metadata for a specific subscription group.
-func (sg *SubscriptionGroups) ListAllSubscriptionGroupLocalizations() {}
+func (sg *SubscriptionGroups) ListAllSubscriptionGroupLocalizations(appid string, parameters *TypeAliases.SubscriptionGroupsQueryParameters) (*TypeAliases.SubscriptionGroupLocalizationsResponse, error) {
+	endpoint := fmt.Sprintf("v1/subscriptionGroups/%s/subscriptionGroupLocalizations", appid)
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	body, code, err := sg.client.Get(endpoint, headers, parameters)
+	if err != nil {
+		return nil, err
+	}
+	switch code {
+	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
+		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
+		response := TypeAliases.SubscriptionGroupLocalizationsResponse{}
+		err = json.Unmarshal(body, &response)
+		if err != nil {
+			return nil, err
+		}
+		return &response, nil
+	default:
+		return nil, fmt.Errorf("status code %d", code)
+	}
+}
 
 // ListAllSubscriptionsForSubscriptionGroup Get a list of all auto-renewable subscriptions in a subscription group.
 func (sg *SubscriptionGroups) ListAllSubscriptionsForSubscriptionGroup() {}

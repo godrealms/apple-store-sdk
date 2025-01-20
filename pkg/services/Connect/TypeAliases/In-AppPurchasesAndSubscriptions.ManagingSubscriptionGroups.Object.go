@@ -12,11 +12,12 @@ type SubscriptionGroup struct {
 	Attributes    SubscriptionGroupAttributes    `json:"attributes"`
 	Links         ResourceLinks                  `json:"links"`
 	Relationships SubscriptionGroupRelationships `json:"relationships"`
+	Type          string                         `json:"type,omitempty"` // Value: subscriptionGroups
 }
 
 type SubscriptionGroupsResponse struct {
-	Data     []SubscriptionGroup `json:"data"`
-	Included []any               `json:"included,omitempty"` // Subscription, SubscriptionGroupLocalization
-	Links    PagedDocumentLinks  `json:"links"`
-	Meta     PagingInformation   `json:"meta"`
+	Data     []SubscriptionGroupLocalization `json:"data"`
+	Included []SubscriptionGroup             `json:"included,omitempty"` // Subscription, SubscriptionGroupLocalization
+	Links    PagedDocumentLinks              `json:"links"`
+	Meta     PagingInformation               `json:"meta"`
 }
