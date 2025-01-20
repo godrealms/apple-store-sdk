@@ -13,10 +13,13 @@ type alg string
 type x5c []string
 
 func (c x5c) GetPublicKey() (*x509.Certificate, error) {
+	if len(c) == 0 {
+		return nil, fmt.Errorf("no certificates found in x5c")
+	}
 	// Decode the first certificate in the chain
 	certBytes, err := base64.StdEncoding.DecodeString(c[0])
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode x5c certificate: %w", err)
+		return nil, fmt.Errorf("failed to decode certificate: %w", err)
 	}
 
 	// Parse the certificate

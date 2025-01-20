@@ -136,7 +136,7 @@ func (c *Client) Get(endpoint string, headers map[string]string, params any) ([]
 
 // Post is a helper for POST requests
 func (c *Client) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s/%s/%s", c.Config.BaseURL, c.Config.APIVersion, c.Config.Region, endpoint)
+	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
 	}
@@ -224,15 +224,21 @@ func (c *Client) GenerateAuthorizationJWT() string {
 	// 创建 JWT 的 Header 和 Claims
 	now := time.Now()
 	claims := jwt.MapClaims{
-		"iss": c.Config.TeamID,                  // Apple Team ID
+		"iss": c.Config.Iss,                     // Apple Team ID
 		"iat": now.Unix(),                       // CURRENT TIMESTAMP
 		"exp": now.Add(30 * time.Minute).Unix(), // Expiration time (30 minutes)
 		"aud": "appstoreconnect-v1",             // Fixed value appstoreconnect-v1
-		"bid": c.Config.BundleID,
+		"bid": c.Config.Bid,
 	}
 	// 创建 JWT
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
-	token.Header["kid"] = c.Config.KeyID // Set Header's kid (key ID)
+	token.Header["kid"] = c.Config.Kid // Set Header's kid (key ID)
+
+	header, _ := json.Marshal(token.Header)
+	log.Println("generated JWT Header:", string(header))
+	payload, _ := json.Marshal(claims)
+	log.Println("generated JWT Claims:", string(payload))
+
 	// 使用私钥签名
 	signedToken, err := token.SignedString(privateKey)
 	if err != nil {

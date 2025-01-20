@@ -2,8 +2,10 @@ package utils
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -50,6 +52,8 @@ func (h *HTTPHelper) Delete(url string, body []byte, headers map[string]string) 
 
 // doRequest is a helper method for making HTTP requests
 func (h *HTTPHelper) doRequest(method, url string, body []byte, headers map[string]string) ([]byte, int, error) {
+	log.Printf("method: %s\n url: %s\nbody:%s\nheaders: %+v", method, url, string(body), headers)
+
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, 0, err
@@ -61,11 +65,16 @@ func (h *HTTPHelper) doRequest(method, url string, body []byte, headers map[stri
 
 	resp, err := h.Client.Do(req)
 	if err != nil {
+		log.Printf("Failed to initiate request：%+v", err)
 		return nil, 0, err
 	}
 	defer resp.Body.Close()
 
-	responseBody, err := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		return nil, resp.StatusCode, errors.New(resp.Status)
+	}
+
+	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, resp.StatusCode, err
 	}
@@ -75,6 +84,9 @@ func (h *HTTPHelper) doRequest(method, url string, body []byte, headers map[stri
 
 // BuildQueryParams builds a query string from any input, supporting nested structs and maps.
 func BuildQueryParams(params any) string {
+	if params == nil {
+		return ""
+	}
 	query := url.Values{}
 	buildQueryRecursive(query, "", params)
 	return query.Encode()

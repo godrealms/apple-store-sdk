@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -30,9 +31,9 @@ type Config struct {
 	Sandbox    bool          // Indicates whether to use sandbox mode
 	APIVersion string        // API version (e.g., "v1", "v2")
 	Region     string        // Region for API requests (e.g., "US", "CN")
-	TeamID     string        // Apple Developer Team ID (for JWT authentication)
-	BundleID   string        // Your application’s Bundle ID (Ex: “com.example.testbundleid”)
-	KeyID      string        // Apple Developer Key ID (for JWT authentication)
+	Iss        string        // Your issuer ID from the Keys page in App Store Connect (Ex: “57246542-96fe-1a63-e053-0824d011072a")
+	Bid        string        // Your app’s bundle ID (Ex: “com.example.testbundleid”)
+	Kid        string        // Key ID Your private key ID from App Store Connect (Ex: 2X9R4HXF34)
 	//-----BEGIN PRIVATE KEY-----
 	// Private key string corresponding to the private key ID from App Store Connect
 	//-----END PRIVATE KEY-----
@@ -41,7 +42,7 @@ type Config struct {
 }
 
 // NewConfig creates a new configuration instance
-func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey string, timeout ...time.Duration) (*Config, error) {
+func NewConfig(sandboxMode bool, APIKey, Iss, Bid, Kid, privateKey string, timeout ...time.Duration) (*Config, error) {
 	// Determine the BaseURL based on sandbox mode
 	baseURL := ProductionBaseURL
 	if sandboxMode {
@@ -56,16 +57,25 @@ func NewConfig(sandboxMode bool, apiKey, teamID, bundleID, keyID, privateKey str
 		resolvedTimeout = DefaultTimeout
 	}
 
+	if !strings.HasPrefix(strings.TrimSpace(privateKey), "-----BEGIN PRIVATE KEY-----") {
+		privateKey = fmt.Sprintf(`-----BEGIN PRIVATE KEY-----
+%s`, strings.TrimSpace(privateKey))
+	}
+	if !strings.HasSuffix(strings.TrimSpace(privateKey), "-----END PRIVATE KEY-----") {
+		privateKey = fmt.Sprintf(`%s
+-----END PRIVATE KEY-----`, strings.TrimSpace(privateKey))
+	}
+
 	config := &Config{
-		APIKey:     apiKey,
+		APIKey:     APIKey,
 		BaseURL:    baseURL,
 		Timeout:    resolvedTimeout,
 		Sandbox:    sandboxMode,
 		APIVersion: DefaultAPIVersion, // Default API version
 		Region:     DefaultRegion,     // Default region
-		BundleID:   bundleID,
-		TeamID:     teamID,
-		KeyID:      keyID,
+		Bid:        Bid,
+		Iss:        Iss,
+		Kid:        Kid,
 		PrivateKey: privateKey,
 		DebugMode:  false, // Default to false
 	}
@@ -98,16 +108,16 @@ func (c *Config) SetDebugMode(debug bool) *Config {
 
 // Validate checks if the configuration is valid
 func (c *Config) Validate() error {
-	if c.APIKey == "" {
-		return fmt.Errorf("API key is missing")
-	}
+	// if c.APIKey == "" {
+	// 	return fmt.Errorf("API key is missing")
+	// }
 	if c.BaseURL == "" {
 		return fmt.Errorf("base URL is missing")
 	}
-	if c.TeamID == "" {
-		return fmt.Errorf("team ID is missing")
+	if c.Iss == "" {
+		return fmt.Errorf("issuer ID is missing")
 	}
-	if c.KeyID == "" {
+	if c.Kid == "" {
 		return fmt.Errorf("key ID is missing")
 	}
 	if c.APIVersion == "" {

@@ -21,7 +21,7 @@ func NewConsumptionService(client *client.Client) *ConsumptionService {
 
 // SendConsumptionInformation Send consumption information about a consumable in-app purchase or auto-renewable subscription to the App Store after your server receives a consumption request notification.
 func (sis *ConsumptionService) SendConsumptionInformation(transactionId string, request *models.ConsumptionRequest) error {
-	endpoint := fmt.Sprintf("/inApps/v1/transactions/consumption/%s", transactionId)
+	endpoint := fmt.Sprintf("inApps/v1/transactions/consumption/%s", transactionId)
 	headers := map[string]string{
 		"Accept": "application/json",
 	}

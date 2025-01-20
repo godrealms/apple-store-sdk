@@ -20,7 +20,7 @@ func NewOrderService(client *client.Client) *OrderService {
 
 // LookUpOrderID Get a customer’s in-app purchases from a receipt using the order ID.
 func (os *OrderService) LookUpOrderID(orderId string) (*models.OrderLookupResponse, error) {
-	endpoint := fmt.Sprintf("/inApps/v1/lookup/%s", orderId)
+	endpoint := fmt.Sprintf("inApps/v1/lookup/%s", orderId)
 	body, code, err := os.client.Get(endpoint, nil, nil)
 	if err != nil {
 		return nil, err

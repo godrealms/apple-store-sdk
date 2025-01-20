@@ -25,11 +25,11 @@ type lastTransactions struct {
 	// The status of the auto-renewable subscription.
 	Status status `json:"status"`
 
-	// The subscription renewal information signed by the App Store, in JSON Web Signature (JWS) format.
-	SignedRenewalInfo JWSRenewalInfo `json:"signedRenewalInfo"`
-
 	// The transaction information signed by the App Store, in JWS format.
 	SignedTransactionInfo JWSTransaction `json:"signedTransactionInfo"`
+
+	// The subscription renewal information signed by the App Store, in JSON Web Signature (JWS) format.
+	SignedRenewalInfo JWSRenewalInfo `json:"signedRenewalInfo"`
 }
 
 // SubscriptionGroupIdentifierItem Information for auto-renewable subscriptions,

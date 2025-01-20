@@ -22,7 +22,7 @@ func NewNotificationService(client *client.Client) *NotificationService {
 // ReceiveNotifications Receiving App Store Server Notifications
 func (ns *NotificationService) ReceiveNotifications(request *http.Request) (*models.NotificationsResponseBodyV2DecodedPayload, error) {
 	// 读取请求体
-	body, err := ioutil.ReadAll(request.Body)
+	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		return nil, fmt.Errorf("error reading request body: %w", err)
 	}
