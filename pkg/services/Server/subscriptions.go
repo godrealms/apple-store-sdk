@@ -1,4 +1,4 @@
-package ServerAPI
+package Server
 
 import (
 	"encoding/json"
@@ -10,11 +10,11 @@ import (
 
 // SubscriptionsService handles Apple subscription-related API calls
 type SubscriptionsService struct {
-	client *client.Client
+	client *client.ServerClient
 }
 
 // NewSubscriptionsService creates a new instance of SubscriptionsService
-func NewSubscriptionsService(client *client.Client) *SubscriptionsService {
+func NewSubscriptionsService(client *client.ServerClient) *SubscriptionsService {
 	return &SubscriptionsService{
 		client: client,
 	}

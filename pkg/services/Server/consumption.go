@@ -1,4 +1,4 @@
-package ServerAPI
+package Server
 
 import (
 	"encoding/json"
@@ -10,10 +10,10 @@ import (
 
 // ConsumptionService Consumption Information Service
 type ConsumptionService struct {
-	client *client.Client
+	client *client.ServerClient
 }
 
-func NewConsumptionService(client *client.Client) *ConsumptionService {
+func NewConsumptionService(client *client.ServerClient) *ConsumptionService {
 	return &ConsumptionService{
 		client: client,
 	}

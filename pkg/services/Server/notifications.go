@@ -1,4 +1,4 @@
-package ServerAPI
+package Server
 
 import (
 	"encoding/json"
@@ -9,10 +9,10 @@ import (
 )
 
 type NotificationService struct {
-	client *client.Client
+	client *client.ServerClient
 }
 
-func NewNotificationService(client *client.Client) *NotificationService {
+func NewNotificationService(client *client.ServerClient) *NotificationService {
 	return &NotificationService{
 		client: client,
 	}

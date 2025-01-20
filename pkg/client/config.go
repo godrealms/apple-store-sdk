@@ -25,7 +25,6 @@ const (
 
 // Config holds the configuration for the API client
 type Config struct {
-	APIKey     string        // API Key for authentication
 	BaseURL    string        // Base URL for the API
 	Timeout    time.Duration // Timeout for HTTP requests
 	Sandbox    bool          // Indicates whether to use sandbox mode
@@ -42,7 +41,7 @@ type Config struct {
 }
 
 // NewConfig creates a new configuration instance
-func NewConfig(sandboxMode bool, APIKey, Iss, Bid, Kid, privateKey string, timeout ...time.Duration) (*Config, error) {
+func NewConfig(sandboxMode bool, Iss, Bid, Kid, privateKey string, timeout ...time.Duration) (*Config, error) {
 	// Determine the BaseURL based on sandbox mode
 	baseURL := ProductionBaseURL
 	if sandboxMode {
@@ -67,7 +66,6 @@ func NewConfig(sandboxMode bool, APIKey, Iss, Bid, Kid, privateKey string, timeo
 	}
 
 	config := &Config{
-		APIKey:     APIKey,
 		BaseURL:    baseURL,
 		Timeout:    resolvedTimeout,
 		Sandbox:    sandboxMode,
@@ -77,7 +75,6 @@ func NewConfig(sandboxMode bool, APIKey, Iss, Bid, Kid, privateKey string, timeo
 		Iss:        Iss,
 		Kid:        Kid,
 		PrivateKey: privateKey,
-		DebugMode:  false, // Default to false
 	}
 
 	return config, config.Validate()

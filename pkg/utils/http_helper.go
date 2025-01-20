@@ -89,6 +89,9 @@ func BuildQueryParams(params any) string {
 	}
 	query := url.Values{}
 	buildQueryRecursive(query, "", params)
+	if query.Encode() != "" {
+		return "?" + query.Encode()
+	}
 	return query.Encode()
 }
 
@@ -129,6 +132,8 @@ func buildQueryRecursive(query url.Values, prefix string, params any) {
 		}
 	default:
 		// 处理基本类型
-		query.Add(prefix, fmt.Sprintf("%v", params))
+		if prefix != "" {
+			query.Add(prefix, fmt.Sprintf("%v", params))
+		}
 	}
 }

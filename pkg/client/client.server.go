@@ -1,12 +1,9 @@
 package client
 
 import (
-	"crypto/ecdsa"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
-	"errors"
 	"fmt"
+	"github.com/godrealms/apple-store-sdk/pkg/JWT"
 	"github.com/godrealms/apple-store-sdk/pkg/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"log"
@@ -14,16 +11,16 @@ import (
 	"time"
 )
 
-// Client is a wrapper for the HTTP client with middleware and configuration
-type Client struct {
+// ServerClient is a wrapper for the HTTP client with middleware and configuration
+type ServerClient struct {
 	httpHelper  *utils.HTTPHelper
 	Config      *Config
 	middlewares []Middleware
 	logger      *utils.Logger // Unified logging interface
 }
 
-// NewClient creates a new API client with default middlewares
-func NewClient(config *Config) *Client {
+// NewServerClient creates a new API client with default middlewares
+func NewServerClient(config *Config) *ServerClient {
 	// Validate the configuration
 	if err := config.Validate(); err != nil {
 		panic(fmt.Sprintf("Invalid configuration: %v", err))
@@ -34,7 +31,7 @@ func NewClient(config *Config) *Client {
 	logger := utils.NewLogger()
 
 	// Create client instance
-	client := &Client{
+	client := &ServerClient{
 		httpHelper:  httpHelper,
 		Config:      config,
 		middlewares: []Middleware{},
@@ -49,12 +46,12 @@ func NewClient(config *Config) *Client {
 }
 
 // Use adds a middleware to the client
-func (c *Client) Use(middleware Middleware) {
+func (c *ServerClient) Use(middleware Middleware) {
 	c.middlewares = append(c.middlewares, middleware)
 }
 
 // LoggingMiddleware adds debug logs for requests and responses
-func (c *Client) LoggingMiddleware() Middleware {
+func (c *ServerClient) LoggingMiddleware() Middleware {
 	return func(next Handler) Handler {
 		return func(req *http.Request) (*http.Response, error) {
 			if c.Config.DebugMode {
@@ -81,7 +78,7 @@ func (c *Client) LoggingMiddleware() Middleware {
 }
 
 // Do sends an HTTP request with middleware support
-func (c *Client) Do(req *http.Request) (*http.Response, error) {
+func (c *ServerClient) Do(req *http.Request) (*http.Response, error) {
 	// Apply middlewares
 	handler := func(req *http.Request) (*http.Response, error) {
 		return c.httpHelper.Client.Do(req)
@@ -95,7 +92,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	return handler(req)
 }
 
-func (c *Client) RetryMiddleware(maxRetries int, delay time.Duration) Middleware {
+func (c *ServerClient) RetryMiddleware(maxRetries int, delay time.Duration) Middleware {
 	return func(next Handler) Handler {
 		return func(req *http.Request) (*http.Response, error) {
 			var resp *http.Response
@@ -124,8 +121,8 @@ func (c *Client) RetryMiddleware(maxRetries int, delay time.Duration) Middleware
 }
 
 // Get is a helper for GET requests
-func (c *Client) Get(endpoint string, headers map[string]string, params any) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s?%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
+func (c *ServerClient) Get(endpoint string, headers map[string]string, params any) ([]byte, int, error) {
+	url := fmt.Sprintf("%s/%s%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
 	if headers == nil {
 		headers = make(map[string]string)
 	}
@@ -135,7 +132,7 @@ func (c *Client) Get(endpoint string, headers map[string]string, params any) ([]
 }
 
 // Post is a helper for POST requests
-func (c *Client) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
+func (c *ServerClient) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
@@ -145,7 +142,7 @@ func (c *Client) Post(endpoint string, body []byte, headers map[string]string) (
 	return c.httpHelper.Post(url, body, headers)
 }
 
-func (c *Client) PUT(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
+func (c *ServerClient) PUT(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
@@ -155,7 +152,7 @@ func (c *Client) PUT(endpoint string, headers map[string]string, body []byte) ([
 	return c.httpHelper.Put(url, body, headers)
 }
 
-func (c *Client) Patch(endpoint string, headers map[string]string, parameters any) ([]byte, int, error) {
+func (c *ServerClient) Patch(endpoint string, headers map[string]string, parameters any) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
@@ -169,7 +166,7 @@ func (c *Client) Patch(endpoint string, headers map[string]string, parameters an
 	return c.httpHelper.Path(url, body, headers)
 }
 
-func (c *Client) Delete(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
+func (c *ServerClient) Delete(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
 	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
@@ -179,44 +176,8 @@ func (c *Client) Delete(endpoint string, headers map[string]string, body []byte)
 	return c.httpHelper.Delete(url, body, headers)
 }
 
-// ParsePrivateKey Parse private keys in PEM format, supporting PKCS#8 and EC private keys
-func ParsePrivateKey(pemKey string) (*ecdsa.PrivateKey, error) {
-	// 解析 PEM 格式
-	block, _ := pem.Decode([]byte(pemKey))
-	if block == nil {
-		return nil, errors.New("failed to decode PEM block: invalid format or empty key")
-	}
-
-	// 检查私钥类型
-	var privateKey *ecdsa.PrivateKey
-	var err error
-
-	switch block.Type {
-	case "PRIVATE KEY": // PKCS#8 格式
-		key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-		if err != nil {
-			return nil, errors.New("failed to parse PKCS#8 private key: " + err.Error())
-		}
-		// 确保是 EC 私钥
-		if ecKey, ok := key.(*ecdsa.PrivateKey); ok {
-			privateKey = ecKey
-		} else {
-			return nil, errors.New("parsed key is not an ECDSA private key")
-		}
-	case "EC PRIVATE KEY": // EC 私钥格式
-		privateKey, err = x509.ParseECPrivateKey(block.Bytes)
-		if err != nil {
-			return nil, errors.New("failed to parse EC private key: " + err.Error())
-		}
-	default:
-		return nil, errors.New("unsupported private key type: " + block.Type)
-	}
-
-	return privateKey, nil
-}
-
-func (c *Client) GenerateAuthorizationJWT() string {
-	privateKey, err := ParsePrivateKey(c.Config.PrivateKey)
+func (c *ServerClient) GenerateAuthorizationJWT() string {
+	privateKey, err := JWT.ParsePrivateKey(c.Config.PrivateKey)
 	if err != nil {
 		log.Printf("failed to parse private key: %v", err)
 		return ""

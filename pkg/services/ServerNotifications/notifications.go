@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
 	"github.com/godrealms/apple-store-sdk/pkg/models"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
 type NotificationService struct {
-	client *client.Client
+	client *client.ServerClient
 }
 
-func NewNotificationService(client *client.Client) *NotificationService {
+func NewNotificationService(client *client.ServerClient) *NotificationService {
 	return &NotificationService{
 		client: client,
 	}

@@ -1,4 +1,4 @@
-package ServerAPI
+package Server
 
 import (
 	"encoding/json"
@@ -8,27 +8,31 @@ import (
 	"net/http"
 )
 
-type OrderService struct {
-	client *client.Client
+type RefundService struct {
+	client *client.ServerClient
 }
 
-func NewOrderService(client *client.Client) *OrderService {
-	return &OrderService{
+func NewRefundService(client *client.ServerClient) *RefundService {
+	return &RefundService{
 		client: client,
 	}
 }
 
-// LookUpOrderID Get a customer’s in-app purchases from a receipt using the order ID.
-func (os *OrderService) LookUpOrderID(orderId string) (*models.OrderLookupResponse, error) {
-	endpoint := fmt.Sprintf("inApps/v1/lookup/%s", orderId)
-	body, code, err := os.client.Get(endpoint, nil, nil)
+// GetRefundHistory Get a paginated list of all of a customer’s refunded in-app purchases for your app.
+func (rs *RefundService) GetRefundHistory(transactionId string) (*models.RefundHistoryResponse, error) {
+	endpoint := fmt.Sprintf("inApps/v2/refund/lookup/%s", transactionId)
+	headers := map[string]string{
+		"Accept": "application/json",
+	}
+	body, code, err := rs.client.Get(endpoint, headers, nil)
 	if err != nil {
 		return nil, err
 	}
+
 	switch code {
 	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
 		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
-		var response models.OrderLookupResponse
+		var response models.RefundHistoryResponse
 		if err = json.Unmarshal(body, &response); err != nil {
 			return nil, err
 		}

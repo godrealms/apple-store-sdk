@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/services/ServerAPI"
+	"github.com/godrealms/apple-store-sdk/pkg/services/Server"
 	"log"
 )
 
@@ -12,14 +12,14 @@ func main() {
 	Kid := ""           // Your private key ID from App Store Connect (Ex: 2X9R4HXF34)
 	PrivateKey := ""    // Private key string corresponding to the private key ID from App Store Connect
 	transactionId := "" // (Required) The identifier of a transaction that belongs to the customer, and which may be an original transaction identifier (originalTransactionId).                                                                                                                                                                                 //
-	config, err := client.NewConfig(true, Kid, Iss, Bid, Kid, PrivateKey)
+	config, err := client.NewConfig(true, Iss, Bid, Kid, PrivateKey)
 	if err != nil {
 		log.Fatalln(err)
 		return
 	}
 
-	appClient := client.NewClient(config)
-	service := ServerAPI.NewSubscriptionsService(appClient)
+	appClient := client.NewServerClient(config)
+	service := Server.NewSubscriptionsService(appClient)
 
 	SubscriptionStatuses, err := service.GetAllSubscriptionStatuses(transactionId)
 	if err != nil {

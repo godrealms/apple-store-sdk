@@ -1,4 +1,4 @@
-package ServerAPI
+package Server
 
 import (
 	"encoding/json"
@@ -9,10 +9,10 @@ import (
 )
 
 type TransactionsService struct {
-	client *client.Client
+	client *client.ServerClient
 }
 
-func NewTransactionsService(client *client.Client) *TransactionsService {
+func NewTransactionsService(client *client.ServerClient) *TransactionsService {
 	return &TransactionsService{
 		client: client,
 	}
