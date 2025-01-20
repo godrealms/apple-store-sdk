@@ -100,13 +100,13 @@ type JWSRenewalInfoDecodedPayload struct {
 	RecentSubscriptionStartDate recentSubscriptionStartDate `json:"recentSubscriptionStartDate"`
 
 	// The UNIX time, in milliseconds, when the most recent auto-renewable subscription purchase expires.
-	RenewalDate renewalDate `json:"renewalDate"`
+	RenewalDate timestamp `json:"renewalDate"`
 
 	// The renewal price, in milliunits, of the auto-renewable subscription that renews at the next billing period.
 	RenewalPrice renewalPrice `json:"renewalPrice"`
 
 	// The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature (JWS) data.
-	SignedDate signedDate `json:"signedDate"`
+	SignedDate timestamp `json:"signedDate"`
 }
 
 // JWSRenewalInfo Subscription renewal information, signed by the App Store, in JSON Web Signature (JWS) format.

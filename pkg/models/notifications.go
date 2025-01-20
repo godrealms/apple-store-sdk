@@ -98,7 +98,7 @@ type NotificationsResponseBodyV2DecodedPayload struct {
 	Version version `json:"version"`
 
 	// The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.
-	SignedDate signedDate `json:"signedDate"`
+	SignedDate timestamp `json:"signedDate"`
 
 	// A unique identifier for the notification. Use this value to identify a duplicate notification.
 	NotificationUUID notificationUUID `json:"notificationUUID"`
