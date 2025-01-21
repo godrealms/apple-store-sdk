@@ -19,7 +19,7 @@ func main() {
 	}
 
 	appClient := client.NewServerClient(config)
-	service := AppStoreServerAPI.NewSubscriptionsService(appClient)
+	service := appStoreServerAPI.NewSubscriptionsService(appClient)
 
 	SubscriptionStatuses, err := service.GetAllSubscriptionStatuses(transactionId)
 	if err != nil {

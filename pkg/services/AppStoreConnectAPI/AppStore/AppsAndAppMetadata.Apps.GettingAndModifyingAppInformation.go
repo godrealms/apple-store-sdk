@@ -3,10 +3,10 @@ package AppStore
 import "github.com/godrealms/apple-store-sdk/pkg/client"
 
 type GettingAndModifyingAppInformation struct {
-	client *client.ConnectClient
+	client *client.AppStoreConnectAPIClient
 }
 
-func NewAppInformation(client *client.ConnectClient) *GettingAndModifyingAppInformation {
+func NewAppInformation(client *client.AppStoreConnectAPIClient) *GettingAndModifyingAppInformation {
 	return &GettingAndModifyingAppInformation{client: client}
 }
 

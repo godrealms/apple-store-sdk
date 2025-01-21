@@ -19,7 +19,7 @@ func main() {
 		return
 	}
 
-	appClient := client.NewConnectClient(config)
+	appClient := client.NewAppStoreConnectAPIClient(config)
 	service := AppStore.NewSubscriptionGroups(appClient)
 	response, err := service.ListAllSubscriptionGroupLocalizations(appid, nil)
 	if err != nil {

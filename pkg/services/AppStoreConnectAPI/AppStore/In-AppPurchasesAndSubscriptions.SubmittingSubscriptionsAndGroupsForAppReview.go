@@ -5,10 +5,10 @@ import (
 )
 
 type SubscriptionSubscriptionGroupSubmissions struct {
-	client *client.ConnectClient
+	client *client.AppStoreConnectAPIClient
 }
 
-func NewSubscriptionSubscriptionGroupSubmissions(client *client.ConnectClient) *SubscriptionGroups {
+func NewSubscriptionSubscriptionGroupSubmissions(client *client.AppStoreConnectAPIClient) *SubscriptionGroups {
 	client.Config.BaseURL = "https://api.appstoreconnect.apple.com"
 	return &SubscriptionGroups{client: client}
 }

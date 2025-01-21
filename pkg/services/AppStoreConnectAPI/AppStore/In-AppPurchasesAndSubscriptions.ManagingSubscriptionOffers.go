@@ -5,10 +5,10 @@ import (
 )
 
 type CreatingManagingSubscriptionOffers struct {
-	client *client.ConnectClient
+	client *client.AppStoreConnectAPIClient
 }
 
-func NewCreatingManagingSubscriptionOffers(client *client.ConnectClient) *SubscriptionGroups {
+func NewCreatingManagingSubscriptionOffers(client *client.AppStoreConnectAPIClient) *SubscriptionGroups {
 	client.Config.BaseURL = "https://api.appstoreconnect.apple.com"
 	return &SubscriptionGroups{client: client}
 }
@@ -27,10 +27,10 @@ func (cms *CreatingManagingSubscriptionOffers) ListAllSubscriptionOfferCodePrice
 
 // SubscriptionIntroductoryOffers Create, modify, and delete introductory offers for auto-renewable subscriptions.
 type SubscriptionIntroductoryOffers struct {
-	client *client.ConnectClient
+	client *client.AppStoreConnectAPIClient
 }
 
-func NewSubscriptionIntroductoryOffers(client *client.ConnectClient) *SubscriptionGroups {
+func NewSubscriptionIntroductoryOffers(client *client.AppStoreConnectAPIClient) *SubscriptionGroups {
 	return &SubscriptionGroups{client: client}
 }
 
@@ -44,10 +44,10 @@ func (cms *SubscriptionIntroductoryOffers) ModifyIntroductoryOffer() {}
 func (cms *SubscriptionIntroductoryOffers) DeleteIntroductoryOfferSubscription() {}
 
 type SubscriptionPromotionalOffers struct {
-	client *client.ConnectClient
+	client *client.AppStoreConnectAPIClient
 }
 
-func NewSubscriptionPromotionalOffers(client *client.ConnectClient) *SubscriptionGroups {
+func NewSubscriptionPromotionalOffers(client *client.AppStoreConnectAPIClient) *SubscriptionGroups {
 	return &SubscriptionGroups{client: client}
 }
 
