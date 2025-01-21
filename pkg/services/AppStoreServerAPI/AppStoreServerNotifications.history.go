@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/models"
 	"github.com/godrealms/apple-store-sdk/pkg/services/AppStoreServerAPI/RequestTypes"
 	"github.com/godrealms/apple-store-sdk/pkg/services/AppStoreServerAPI/ResponseTypes"
 	"github.com/godrealms/apple-store-sdk/pkg/types"
@@ -40,7 +39,7 @@ func (snh *AppStoreServerNotificationsHistory) GetNotificationHistory(pagination
 	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
 		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
 		var response ResponseTypes.NotificationHistoryResponse
-		if err = json.Unmarshal(body, &models.HistoryResponse{}); err != nil {
+		if err = json.Unmarshal(body, &response); err != nil {
 			return nil, err
 		}
 		return &response, nil
@@ -51,7 +50,7 @@ func (snh *AppStoreServerNotificationsHistory) GetNotificationHistory(pagination
 
 // RequestTestNotification Ask App Store AppStoreServerAPI Notifications to send a test notification to your server.
 func (snh *AppStoreServerNotificationsHistory) RequestTestNotification() (*ResponseTypes.SendTestNotificationResponse, error) {
-	endpoint := "inApps/v1/notifications/test"
+	endpoint := "/inApps/v1/notifications/test"
 	headers := map[string]string{
 		"Accept": "application/json",
 	}
@@ -63,7 +62,7 @@ func (snh *AppStoreServerNotificationsHistory) RequestTestNotification() (*Respo
 	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNonAuthoritativeInfo, http.StatusNoContent,
 		http.StatusResetContent, http.StatusPartialContent, http.StatusMultiStatus, http.StatusAlreadyReported, http.StatusIMUsed:
 		var response ResponseTypes.SendTestNotificationResponse
-		if err = json.Unmarshal(body, &models.HistoryResponse{}); err != nil {
+		if err = json.Unmarshal(body, &response); err != nil {
 			return nil, err
 		}
 		return &response, nil
@@ -74,7 +73,7 @@ func (snh *AppStoreServerNotificationsHistory) RequestTestNotification() (*Respo
 
 // GetTestNotificationStatus Check the status of the test App Store server notification sent to your server.
 func (snh *AppStoreServerNotificationsHistory) GetTestNotificationStatus(testNotificationToken string) (*ResponseTypes.CheckTestNotificationResponse, error) {
-	endpoint := fmt.Sprintf("inApps/v1/notifications/test/%s", testNotificationToken)
+	endpoint := fmt.Sprintf("/inApps/v1/notifications/test/%s", testNotificationToken)
 	headers := map[string]string{
 		"Accept": "application/json",
 	}

@@ -18,7 +18,8 @@ func NewSubscriptionStatus(client *client.AppStoreConnectAPIClient) *Subscriptio
 	return &SubscriptionStatus{client: client}
 }
 
-// GetSubscriptions Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
+// GetSubscriptions
+// Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
 func (ss *SubscriptionStatus) GetSubscriptions(transactionId types.TransactionId, parameters QueryParameters.SubscriptionsQueryParameters) (*ResponseTypes.StatusResponse, error) {
 	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionId)
 	headers := map[string]string{
