@@ -3,7 +3,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/godrealms/apple-store-sdk/pkg/JWT"
+	"github.com/godrealms/apple-store-sdk/pkg/types"
 	"github.com/godrealms/apple-store-sdk/pkg/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"log"
@@ -178,7 +178,7 @@ func (c *AppStoreConnectAPIClient) Delete(endpoint string, headers map[string]st
 }
 
 func (c *AppStoreConnectAPIClient) GenerateAuthorizationJWT(method string, endpoint string) string {
-	privateKey, err := JWT.ParsePrivateKey(c.Config.PrivateKey)
+	privateKey, err := types.ParsePrivateKey(c.Config.PrivateKey)
 	if err != nil {
 		log.Printf("failed to parse private key: %v", err)
 		return ""
