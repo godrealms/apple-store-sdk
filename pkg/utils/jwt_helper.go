@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// GenerateAuthorizationJWT generates a JWT for App Store Server API
+// GenerateAuthorizationJWT generates a JWT for App Store AppStoreServerAPI API
 func GenerateAuthorizationJWT(IssuerID, BundleID, KeyID, PrivateKey string) (string, error) {
 	// Read the private key from the .p8 file
 	// privateKeyBytes, err := ioutil.ReadFile(PrivateKey)

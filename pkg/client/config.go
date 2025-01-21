@@ -30,13 +30,13 @@ type Config struct {
 	Sandbox    bool          // Indicates whether to use sandbox mode
 	APIVersion string        // API version (e.g., "v1", "v2")
 	Region     string        // Region for API requests (e.g., "US", "CN")
-	Iss        string        // Your issuer ID from the Keys page in App Store Connect (Ex: “57246542-96fe-1a63-e053-0824d011072a")
+	Iss        string        // Your issuer ID from the Keys page in App Store AppStoreConnectAPI (Ex: “57246542-96fe-1a63-e053-0824d011072a")
 	Bid        string        // Your app’s bundle ID (Ex: “com.example.testbundleid”)
-	Kid        string        // Key ID Your private key ID from App Store Connect (Ex: 2X9R4HXF34)
+	Kid        string        // Key ID Your private key ID from App Store AppStoreConnectAPI (Ex: 2X9R4HXF34)
 	//-----BEGIN PRIVATE KEY-----
-	// Private key string corresponding to the private key ID from App Store Connect
+	// Private key string corresponding to the private key ID from App Store AppStoreConnectAPI
 	//-----END PRIVATE KEY-----
-	PrivateKey string // Private key string corresponding to the private key ID from App Store Connect
+	PrivateKey string // Private key string corresponding to the private key ID from App Store AppStoreConnectAPI
 	DebugMode  bool   // Debug mode for detailed logging (default: false)
 }
 

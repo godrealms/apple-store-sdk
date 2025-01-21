@@ -39,7 +39,7 @@ var (
 	PaginationTokenExpiredError = NewAppleStoreAPIError(4000017, "Invalid request. The pagination token is expired.")
 
 	// ServerNotificationURLNotFoundError An error that indicates the App Store server couldn’t find a notifications URL for your app in the environment.
-	ServerNotificationURLNotFoundError = NewAppleStoreAPIError(4040007, "No App Store Server Notification URL found for provided app. Check that a URL is configured in App Store Connect for this environment.")
+	ServerNotificationURLNotFoundError = NewAppleStoreAPIError(4040007, "No App Store AppStoreServerAPI Notification URL found for provided app. Check that a URL is configured in App Store AppStoreConnectAPI for this environment.")
 
 	// StartDateAfterEndDateError An error that indicates the end date precedes the start date, or the two dates are equal.
 	StartDateAfterEndDateError = NewAppleStoreAPIError(4000013, "Invalid request. The end date precedes the start date or the dates are the same.")

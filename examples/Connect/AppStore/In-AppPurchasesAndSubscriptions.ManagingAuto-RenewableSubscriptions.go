@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/godrealms/apple-store-sdk/pkg/client"
-	"github.com/godrealms/apple-store-sdk/pkg/services/Connect/AppStore"
+	"github.com/godrealms/apple-store-sdk/pkg/services/AppStoreConnectAPI/AppStore"
 	"log"
 )
 
