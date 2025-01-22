@@ -11,16 +11,16 @@ import (
 )
 
 type SubscriptionRenewalDateExtension struct {
-	client *client.AppStoreConnectAPIClient
+	client *client.AppStoreServerAPIClient
 }
 
-func NewSubscriptionRenewalDateExtension(client *client.AppStoreConnectAPIClient) *SubscriptionRenewalDateExtension {
+func NewSubscriptionRenewalDateExtension(client *client.AppStoreServerAPIClient) *SubscriptionRenewalDateExtension {
 	return &SubscriptionRenewalDateExtension{client: client}
 }
 
 // ExtendSubscriptionRenewalDate Extends the renewal date of a customer’s active subscription using the original transaction identifier.
 func (rde *SubscriptionRenewalDateExtension) ExtendSubscriptionRenewalDate(originalTransactionId string, request *RequestTypes.ExtendRenewalDateRequest) (*ResponseTypes.ExtendRenewalDateResponse, error) {
-	endpoint := fmt.Sprintf("inApps/v1/subscriptions/extend/%s", originalTransactionId)
+	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/extend/%s", originalTransactionId)
 	headers := map[string]string{
 		"Accept": "application/json",
 	}
@@ -47,7 +47,7 @@ func (rde *SubscriptionRenewalDateExtension) ExtendSubscriptionRenewalDate(origi
 
 // ExtendSubscriptionRenewalDatesForAllActiveSubscribers Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
 func (rde *SubscriptionRenewalDateExtension) ExtendSubscriptionRenewalDatesForAllActiveSubscribers(request *RequestTypes.MassExtendRenewalDateRequest) (*ResponseTypes.MassExtendRenewalDateResponse, error) {
-	endpoint := "inApps/v1/subscriptions/extend/mass/"
+	endpoint := "/inApps/v1/subscriptions/extend/mass/"
 	headers := map[string]string{
 		"Accept": "application/json",
 	}
@@ -74,7 +74,7 @@ func (rde *SubscriptionRenewalDateExtension) ExtendSubscriptionRenewalDatesForAl
 
 // GetStatusOfSubscriptionRenewalDateExtensions Checks whether a renewal date extension request completed, and provides the final count of successful or failed extensions.
 func (rde *SubscriptionRenewalDateExtension) GetStatusOfSubscriptionRenewalDateExtensions(productId types.ProductId, requestIdentifier types.RequestIdentifier) (*ResponseTypes.MassExtendRenewalDateStatusResponse, error) {
-	endpoint := fmt.Sprintf("inApps/v1/subscriptions/extend/mass/%s/%s", productId, requestIdentifier)
+	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/extend/mass/%s/%s", productId, requestIdentifier)
 	headers := map[string]string{
 		"Accept": "application/json",
 	}

@@ -19,8 +19,8 @@ type AppStoreServerAPIClient struct {
 	logger      *utils.Logger // Unified logging interface
 }
 
-// NewServerClient creates a new API client with default middlewares
-func NewServerClient(config *Config) *AppStoreServerAPIClient {
+// NewAppStoreServerAPIClient creates a new API client with default middlewares
+func NewAppStoreServerAPIClient(config *Config) *AppStoreServerAPIClient {
 	// Validate the configuration
 	if err := config.Validate(); err != nil {
 		panic(fmt.Sprintf("Invalid configuration: %v", err))
@@ -122,7 +122,7 @@ func (c *AppStoreServerAPIClient) RetryMiddleware(maxRetries int, delay time.Dur
 
 // Get is a helper for GET requests
 func (c *AppStoreServerAPIClient) Get(endpoint string, headers map[string]string, params any) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
+	url := fmt.Sprintf("%s%s%s", c.Config.BaseURL, endpoint, utils.BuildQueryParams(params))
 	if headers == nil {
 		headers = make(map[string]string)
 	}
@@ -133,7 +133,7 @@ func (c *AppStoreServerAPIClient) Get(endpoint string, headers map[string]string
 
 // Post is a helper for POST requests
 func (c *AppStoreServerAPIClient) Post(endpoint string, body []byte, headers map[string]string) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	url := fmt.Sprintf("%s%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
 	}
@@ -143,7 +143,7 @@ func (c *AppStoreServerAPIClient) Post(endpoint string, body []byte, headers map
 }
 
 func (c *AppStoreServerAPIClient) PUT(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	url := fmt.Sprintf("%s%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
 	}
@@ -153,7 +153,7 @@ func (c *AppStoreServerAPIClient) PUT(endpoint string, headers map[string]string
 }
 
 func (c *AppStoreServerAPIClient) Patch(endpoint string, headers map[string]string, parameters any) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	url := fmt.Sprintf("%s%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
 	}
@@ -167,7 +167,7 @@ func (c *AppStoreServerAPIClient) Patch(endpoint string, headers map[string]stri
 }
 
 func (c *AppStoreServerAPIClient) Delete(endpoint string, headers map[string]string, body []byte) ([]byte, int, error) {
-	url := fmt.Sprintf("%s/%s", c.Config.BaseURL, endpoint)
+	url := fmt.Sprintf("%s%s", c.Config.BaseURL, endpoint)
 	if headers == nil {
 		headers = make(map[string]string)
 	}

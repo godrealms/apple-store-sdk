@@ -11,16 +11,16 @@ import (
 )
 
 type SubscriptionStatus struct {
-	client *client.AppStoreConnectAPIClient
+	client *client.AppStoreServerAPIClient
 }
 
-func NewSubscriptionStatus(client *client.AppStoreConnectAPIClient) *SubscriptionStatus {
+func NewSubscriptionStatus(client *client.AppStoreServerAPIClient) *SubscriptionStatus {
 	return &SubscriptionStatus{client: client}
 }
 
-// GetSubscriptions
+// GetAllSubscriptionStatuses
 // Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
-func (ss *SubscriptionStatus) GetSubscriptions(transactionId types.TransactionId, parameters QueryParameters.SubscriptionsQueryParameters) (*ResponseTypes.StatusResponse, error) {
+func (ss *SubscriptionStatus) GetAllSubscriptionStatuses(transactionId types.TransactionId, parameters QueryParameters.SubscriptionsQueryParameters) (*ResponseTypes.StatusResponse, error) {
 	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionId)
 	headers := map[string]string{
 		"Accept": "application/json",

@@ -10,10 +10,10 @@ import (
 )
 
 type TransactionInformation struct {
-	client *client.AppStoreConnectAPIClient
+	client *client.AppStoreServerAPIClient
 }
 
-func NewTransactionInformation(client *client.AppStoreConnectAPIClient) *TransactionInformation {
+func NewTransactionInformation(client *client.AppStoreServerAPIClient) *TransactionInformation {
 	return &TransactionInformation{client: client}
 }
 
