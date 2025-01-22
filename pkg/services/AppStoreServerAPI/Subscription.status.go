@@ -20,7 +20,7 @@ func NewSubscriptionStatus(client *client.AppStoreServerAPIClient) *Subscription
 
 // GetAllSubscriptionStatuses
 // Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
-func (ss *SubscriptionStatus) GetAllSubscriptionStatuses(transactionId types.TransactionId, parameters QueryParameters.SubscriptionsQueryParameters) (*ResponseTypes.StatusResponse, error) {
+func (ss *SubscriptionStatus) GetAllSubscriptionStatuses(transactionId types.TransactionId, parameters *QueryParameters.SubscriptionsQueryParameters) (*ResponseTypes.StatusResponse, error) {
 	endpoint := fmt.Sprintf("/inApps/v1/subscriptions/%s", transactionId)
 	headers := map[string]string{
 		"Accept": "application/json",

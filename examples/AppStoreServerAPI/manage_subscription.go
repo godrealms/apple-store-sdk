@@ -3,15 +3,16 @@ package main
 import (
 	"github.com/godrealms/apple-store-sdk/pkg/client"
 	"github.com/godrealms/apple-store-sdk/pkg/services/AppStoreServerAPI"
+	"github.com/godrealms/apple-store-sdk/pkg/types"
 	"log"
 )
 
 func main() {
-	Iss := ""           // Your issuer ID from the Keys page in App Store AppStoreConnectAPI (Ex: “57246542-96fe-1a63-e053-0824d011072a")
-	Bid := ""           // Your app’s bundle ID (Ex: “com.example.testbundleid”)
-	Kid := ""           // Your private key ID from App Store AppStoreConnectAPI (Ex: 2X9R4HXF34)
-	PrivateKey := ""    // Private key string corresponding to the private key ID from App Store AppStoreConnectAPI
-	transactionId := "" // (Required) The identifier of a transaction that belongs to the customer, and which may be an original transaction identifier (originalTransactionId).                                                                                                                                                                                 //
+	Iss := ""                                // Your issuer ID from the Keys page in App Store AppStoreConnectAPI (Ex: “57246542-96fe-1a63-e053-0824d011072a")
+	Bid := ""                                // Your app’s bundle ID (Ex: “com.example.testbundleid”)
+	Kid := ""                                // Your private key ID from App Store AppStoreConnectAPI (Ex: 2X9R4HXF34)
+	PrivateKey := ""                         // Private key string corresponding to the private key ID from App Store AppStoreConnectAPI
+	transactionId := types.TransactionId("") // (Required) The identifier of a transaction that belongs to the customer, and which may be an original transaction identifier (originalTransactionId).                                                                                                                                                                                 //
 	config, err := client.NewConfig(true, Iss, Bid, Kid, PrivateKey)
 	if err != nil {
 		log.Fatalln(err)
@@ -21,7 +22,7 @@ func main() {
 	appClient := client.NewAppStoreServerAPIClient(config)
 	service := appStoreServerAPI.NewSubscriptionStatus(appClient)
 
-	SubscriptionStatuses, err := service.GetAllSubscriptionStatuses(transactionId)
+	SubscriptionStatuses, err := service.GetAllSubscriptionStatuses(transactionId, nil)
 	if err != nil {
 		log.Fatalf("GetAllSubscriptionStatuses err: %+v\n", err)
 		return
