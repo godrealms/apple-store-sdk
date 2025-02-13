@@ -1,9 +1,9 @@
 ### **Apple Store Service API Golang SDK 项目介绍**
 
-#### **项目名称**
-Apple Store Service API Golang SDK
+[![Go Reference](https://pkg.go.dev/badge/github.com/godrealms/go-apple-sdk.svg)](https://pkg.go.dev/github.com/godrealms/go-apple-sdk)
+[![Go Report Card](https://goreportcard.com/badge/github.com/godrealms/go-apple-sdk)](https://goreportcard.com/report/github.com/godrealms/go-apple-sdk)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-#### **项目简介**
 Apple Store Service API Golang SDK 是一个高效、模块化的 Golang 软件开发工具包（SDK），旨在帮助开发者轻松集成 Apple Store 的服务接口。通过该 SDK，开发者可以快速实现对 Apple Store 的收据验证、订阅管理、交易查询以及通知处理等功能，屏蔽底层复杂的 HTTP 请求逻辑，专注于业务开发。
 
 #### **项目特点**
